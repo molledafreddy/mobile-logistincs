@@ -1,0 +1,22 @@
+diff --git a/node_modules/@react-native-community/netinfo/lib/module/internal/nativeInterface.js b/node_modules/@react-native-community/netinfo/lib/module/internal/nativeInterface.js
+--- a/node_modules/@react-native-community/netinfo/lib/module/internal/nativeInterface.js
++++ b/node_modules/@react-native-community/netinfo/lib/module/internal/nativeInterface.js
+@@ -29,9 +29,11 @@ let nativeEventEmitter = null;
+ const nativeInterface = Object.assign(RNCNetInfo, {
+   get eventEmitter() {
+     if (!nativeEventEmitter) {
+-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+-      /// @ts-ignore
+-      nativeEventEmitter = new NativeEventEmitter(RNCNetInfo);
+-    } // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+-    /// @ts-ignore
++      // In React Native new architecture (JSI/TurboModules), passing the native module
++      // to NativeEventEmitter causes a crash. Use null so the module manages its own events.
++      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
++      /// @ts-ignore
++      nativeEventEmitter = new NativeEventEmitter(global.__turboModuleProxy ? null : RNCNetInfo);
++    } // eslint-disable-next-line @typescript-eslint/ban-ts-comment
++    /// @ts-ignore
+
+
+     return nativeEventEmitter;
